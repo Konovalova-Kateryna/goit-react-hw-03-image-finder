@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import { Modal } from './Modal';
+import { PropTypes } from 'prop-types';
 
 export class ImageGalleryItem extends Component {
   state = {
@@ -19,9 +20,12 @@ export class ImageGalleryItem extends Component {
           alt={option.tags}
         />
         {this.state.isModalOpen && (
-          <Modal modalOption={option} onClose={this.closeModal} />
+          <Modal modalOption={option} closeModal={this.closeModal} />
         )}
       </>
     );
   }
 }
+ImageGalleryItem.propTypes = {
+  option: PropTypes.object.isRequired,
+};

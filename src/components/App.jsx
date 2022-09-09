@@ -1,30 +1,22 @@
 import { Component } from 'react';
 import Searchbar from './Searchbar';
 import ImageGallery from './ImageGallery';
-import Modal from './Modal';
-
-const srollArea = document.getElementById('scrollArea');
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default class App extends Component {
   state = {
     search: '',
     page: 1,
-    gallery: [],
-    visible: false,
   };
 
   createGallery = PictureName => {
-    console.log(PictureName);
     this.setState({
       search: PictureName,
       page: 1,
       gallery: [],
     });
   };
-
-  // scrollTo = () =>
-  //   srollArea.scrollIntoView({ block: 'center', behavior: 'smooth' });
-
   onLoadMore = e => {
     e.preventDefault();
     this.setState(prevState => ({
@@ -39,20 +31,14 @@ export default class App extends Component {
   };
 
   render() {
-    const { gallery } = this.state;
-    console.log(this.state);
-    console.log(gallery);
+    const { page, search } = this.state;
+    console.log(ImageGallery.gallery);
 
     return (
       <div className="App">
         <Searchbar onSubmit={this.createGallery} />
-        <ImageGallery search={this.state.search} page={this.state.page} />
-
-        <button type="button" onClick={this.onLoadMore}>
-          Load more
-        </button>
-
-        <div id="scrollArea"></div>
+        <ImageGallery search={search} page={page} loadMore={this.onLoadMore} />
+        <ToastContainer />
       </div>
     );
   }

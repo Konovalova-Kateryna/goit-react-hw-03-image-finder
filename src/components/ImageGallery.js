@@ -2,7 +2,8 @@ import { Component } from 'react';
 import { getGallery } from 'services/api';
 import { ImageGalleryItem } from './ImageGalleryItem';
 import { Spinner } from './Loader';
-import Modal from './Modal';
+import { toast } from 'react-toastify';
+import { PropTypes } from 'prop-types';
 
 // status: {
 //   idle - спокойный,
@@ -14,18 +15,10 @@ export class ImageGallery extends Component {
   state = {
     gallery: [],
     status: 'idle',
-    visible: false,
-  };
-  showModal = () => {
-    console.log('click on Modal');
-  };
-  toggleModal = () => {
-    this.setState(prevState => ({
-      visible: !prevState.visible,
-    }));
+    totalPage: 0,
   };
 
-  async componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(prevProps, _) {
     const { search, page } = this.props;
 
     try {
@@ -43,7 +36,10 @@ export class ImageGallery extends Component {
         this.setState(prevState => ({
           gallery: [...prevState.gallery, ...newGallery.hits],
         }));
-        this.setState({ status: 'resolved' });
+        this.setState({
+          status: 'resolved',
+          totalPage: Math.ceil(newGallery.totalHits / 12),
+        });
         return;
       }
     } catch (error) {
@@ -53,31 +49,43 @@ export class ImageGallery extends Component {
   }
 
   render() {
-    const { gallery, status, visible } = this.state;
+    const { gallery, status, totalPage } = this.state;
+    const { loadMore, page } = this.props;
+    console.log(page, totalPage);
 
     return (
-      <div>
-        {status === 'idle' && <h2>Введите имя покемона</h2>}
-        {status === 'pending' && <Spinner />}
-        {status === 'rejected' && <alarm>Ooppss, I did it again</alarm>}
-        {status === 'resolved' && (
-          <ul className="ImageGallery">
+      <div className="GalleryContainer">
+        {status === 'idle'}
+        {status === 'rejected' &&
+          toast.error(
+            'Sorry, there are no images matching your search query. Please try again.'
+          )}
+        {gallery.length > 0 && (
+          <ul key={this.props.search} className="ImageGallery">
             {gallery.map(item => {
               return (
-                <li
-                  className="ImageGalleryItem"
-                  key={item.id}
-                  onClick={this.toggleModal}
-                >
+                <li className="ImageGalleryItem" key={item.id}>
                   <ImageGalleryItem option={item} />
                 </li>
               );
             })}
           </ul>
         )}
+        {(status === 'pending' && <Spinner />) ||
+          (gallery.length > 1 && page < totalPage && (
+            <button className="Button" type="button" onClick={loadMore}>
+              Load more
+            </button>
+          ))}
       </div>
     );
   }
 }
 
 export default ImageGallery;
+
+ImageGallery.propTypes = {
+  search: PropTypes.string,
+  page: PropTypes.number,
+  loadMore: PropTypes.func,
+};

@@ -12,6 +12,7 @@ export const getGallery = async (search, page) => {
     image_type: 'photo',
     orientation: 'horizontal',
     safesaerch: true,
+    per_page: 12,
     page,
   });
   console.log('API, str18', search, page);
@@ -19,25 +20,3 @@ export const getGallery = async (search, page) => {
 
   return responce.data;
 };
-
-// export async function getGallery(searchQuery) {
-//   const searchParams = new URLSearchParams({
-//     key: API_KEY,
-//     q: searchQuery,
-//     image_type: 'photo',
-//     orientation: 'horizontal',
-//     safesaerch: true,
-//     page,
-//     per_page: perPage,
-//   });
-
-//   const responce = axios.get(`/?${searchParams}`);
-//   page += 1;
-
-//   return responce.data;
-// }
-
-// export fetchGallery = params => {
-//   const searchParams = params;
-//   return axios.get('${BASE_URL}/?${API_KEY}&${searchParams}');
-// };

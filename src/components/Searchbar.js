@@ -1,6 +1,8 @@
-import { Field, Form, Formik, validateYupSchema } from 'formik';
+import { Field, Form, Formik } from 'formik';
 import { Component } from 'react';
 import { ImSearch } from 'react-icons/im';
+import { toast } from 'react-toastify';
+import { PropTypes } from 'prop-types';
 
 const initialValues = { searchParam: '' };
 
@@ -13,12 +15,11 @@ export class Searchbar extends Component {
     console.log(value);
 
     if (value.searchParam.trim() === '') {
-      alert('Введите имя покемона');
+      toast.error('Please specify your search query.');
       resetForm();
       return;
     }
     this.props.onSubmit(value.searchParam);
-    // this.props.onSubmit(this.state.searchParam);
     this.setState({ searchParam: '' });
     resetForm();
   };
@@ -47,20 +48,7 @@ export class Searchbar extends Component {
 
 export default Searchbar;
 
-{
-  /* <header className="Searchbar">
-      <form className="SearchForm">
-        <button type="submit" className="SearchForm-button">
-          <ImSearch className="SearchForm-button-label" />
-        </button>
-
-        <input
-          className="SearchForm-input"
-          type="text"
-          autocomplete="off"
-          autofocus
-          placeholder="Search images and photos"
-        />
-      </form>
-    </header> */
-}
+Searchbar.propTypes = {
+  handleSubmit: PropTypes.func,
+  searchParam: PropTypes.string,
+};

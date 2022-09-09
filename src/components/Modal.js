@@ -1,41 +1,37 @@
-// import { MutatingDots } from 'react-loader-spinner';
-
 import { Component } from 'react';
 import { createPortal } from 'react-dom';
+import { PropTypes } from 'prop-types';
+
+const modalRoot = document.querySelector('#root');
 
 export class Modal extends Component {
   componentDidMount() {
-    window.addEventListener('keydown', this.keyDown);
+    const backdrop = document.querySelector('.Overlay');
+    window.addEventListener('keydown', this.closeModal);
+    backdrop.addEventListener('click', this.closeModal);
   }
   componentWillUnmount() {
-    window.removeEventListener('keydown', this.keyDown);
+    window.removeEventListener('keydown', this.closeModal);
   }
-  keyDown = e => {
-    if (e.code === 'Escape') {
-      this.props.onCLose();
-    }
-  };
-  onBackDropClick = e => {
-    if (e.currentTarget === e.target) {
-      this.props.onClose();
+  closeModal = e => {
+    if (e.code === 'Escape' || e.currentTarget === e.target) {
+      this.props.closeModal();
     }
   };
 
   render() {
     const { modalOption } = this.props;
-    return (
-      <div className="Overlay" onClick={this.onBackDropClick}>
+    return createPortal(
+      <div className="Overlay" onClick={this.closeModal}>
         <div className="Modal">
           <img src={modalOption.largeImageURL} alt={modalOption.tags} />
         </div>
-      </div>
+      </div>,
+      modalRoot
     );
   }
 }
-
-// const PopupWindow = () => {
-//   return ReactDOM.createPortal(
-//     <div>PopupWindow with portal</div>,
-//     document.querySelector('#popup-root')
-//   );
-// };
+Modal.propTypes = {
+  closeModal: PropTypes.func.isRequired,
+  modalOption: PropTypes.object.isRequired,
+};
