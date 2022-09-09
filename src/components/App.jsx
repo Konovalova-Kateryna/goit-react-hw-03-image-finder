@@ -32,8 +32,7 @@ export default class App extends Component {
 
   render() {
     const { page, search } = this.state;
-    console.log(ImageGallery.gallery);
-
+  
     return (
       <div className="App">
         <Searchbar onSubmit={this.createGallery} />

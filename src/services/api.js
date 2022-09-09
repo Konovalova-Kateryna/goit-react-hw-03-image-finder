@@ -15,7 +15,7 @@ export const getGallery = async (search, page) => {
     per_page: 12,
     page,
   });
-  console.log('API, str18', search, page);
+
   const responce = await axios.get(`/?${searchParams}`);
 
   return responce.data;
